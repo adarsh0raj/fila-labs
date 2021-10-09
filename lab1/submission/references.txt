@@ -1,0 +1,2 @@
+https://numpy.org/doc/1.16/reference/routines.random.html
+https://docs.python.org/3/howto/argparse.html
