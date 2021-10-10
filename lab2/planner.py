@@ -6,13 +6,10 @@ from copy import deepcopy
 warnings.filterwarnings("ignore", category = RuntimeWarning)        # ignore runtime warnings
 
 def calc_action_val(v, s, a, transition, discount):
-    action_val = 0
     try:
-        action_val = sum([b[2]*(b[1] + discount*v[b[0]]) for b in transition[(s,a)]])
-        return action_val
-    
+        return sum([b[2]*(b[1] + discount*v[b[0]]) for b in transition[(s,a)]])
     except:
-        return action_val
+        return -1
 
 def calc_val(states, actions, pi, transition, discount, end):
 
@@ -27,7 +24,7 @@ def calc_val(states, actions, pi, transition, discount, end):
         else:
             for branch in transition[(s, pi[s])]:
                 B[s] += branch[2]*branch[1]
-                A[s, branch[0]] = -1 * branch[2] * discount
+                A[s, branch[0]] = (-1 * branch[2] * discount)
         
         A[s, s] += 1
 
@@ -83,7 +80,7 @@ def lp(states, actions, transition, discount, end):
     
     for s in range(states):
         q = [calc_action_val(v, s, a, transition, discount) for a in range(actions)]
-        ac = (np.abs(np.array(q) - v[s])).argmin() 
+        ac = np.argmax(q)
         pi[s] = ac
 
     return v, pi
