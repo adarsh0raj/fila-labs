@@ -16,17 +16,13 @@ def calc_val(states, actions, pi, transition, discount, end):
     A = np.zeros((states, states))
     B = np.zeros(states)
     for s in range(states):
-        if s in end:
-            A[s, s] += 1
-            continue
-        if (s, pi[s]) not in transition.keys():
+        A[s, s] += 1
+        if s in end or (s, pi[s]) not in transition.keys():
             continue
         else:
             for branch in transition[(s, pi[s])]:
                 B[s] += branch[2]*branch[1]
-                A[s, branch[0]] = (-1 * branch[2] * discount)
-        
-        A[s, s] += 1
+                A[s, branch[0]] -= (branch[2] * discount)
 
     v = np.linalg.solve(A, B)
     return v
@@ -87,7 +83,7 @@ def lp(states, actions, transition, discount, end):
 
 def hpi(states, actions, transition, discount, end):
 
-    pi = np.zeros(states, dtype=int)
+    pi = np.random.randint(0, actions, size=states)
     loop_flag = True
 
     while loop_flag:
@@ -96,14 +92,15 @@ def hpi(states, actions, transition, discount, end):
         loop_flag = False
         for s in range(states):
             a_ia = -1
-            q_ia = v[s]
             for a in range(actions):
-                q = calc_action_val(v, s, a, transition, discount)
-                if abs(q - v[s]) < 1e-6:
-                    continue
-                if q > q_ia:
-                    q_ia = q
+                try:
+                    q = sum([b[2]*(b[1] + discount*v[b[0]]) for b in transition[(s,a)]])
+                except:
+                    q = 0
+
+                if q > v[s] + 1e-6:
                     a_ia = a
+                    break
 
             if a_ia != -1:
                 loop_flag = True
