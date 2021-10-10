@@ -41,7 +41,13 @@ state_file = open(args.states, "r")
 
 numStates = 0
 numActions = 9
-fixed_player = int(policy_file.readline())
+opponent = int(policy_file.readline())
+
+if opponent == 2:
+    player = 1
+else:
+    player = 2
+
 policy = dict()
 
 for x in policy_file.readlines():
@@ -60,59 +66,44 @@ mdptype = "episodic"
 transition = dict()
 
 state_file.seek(0)
+for line in state_file:
+    s1 = str(line)[:9]
+    for a1 in range(9):
+        if s1[a1] == '0':
+            s2 = s1[:a1] + str(player) + s1[a1+1:]
+            res = check_term_state(s2, player)
 
-if fixed_player == 2:
+            if res == "lose" or res == "draw":
+                transition[(states[s1], a1)] = [[end, float(0), float(1)]]
+            elif res == "valid":
 
-    for line in state_file:
-        s1 = str(line)[:9]
-        for a1 in range(9):
-            if s1[a1] == '0':
-                s2 = s1[:a1] + '1' + s1[a1+1:]
-                res = check_term_state(s2, 1)
+                transition[(states[s1], a1)] = []
+                win_probab = 0
+                draw_probab = 0
+                for a2 in range(9):
+                    if s2[a2] == '0' and policy[s2][a2] != 0:
+                        s3 = s2[:a2] + str(opponent) + s2[a2+1:]
+                        res2 = check_term_state(s3, opponent)
 
-                if res == "win":
-                    transition[(states[s1], a1)] = [end, float(1), float(1)]
-                elif res == "lose" or res == "draw":
-                    transition[(states[s1], a1)] = [end, float(0), float(1)]
-                elif res == "valid":
-                    for a2 in range(9):
-                        if s2[a2] == '0' and policy[s2][a2] != 0:
-                            s3 = s2[:a2] + '2' + s2[a2+1:]
-                            res2 = check_term_state(s3, 2)
+                        if res2 == "lose":
+                            win_probab += policy[s2][a2]
+                        elif res2 == "draw":
+                            draw_probab += policy[s2][a2]
+                        elif res2 == "valid":
+                            transition[(states[s1], a1)].append([states[s3], float(0), policy[s2][a2]])
+                
+                if win_probab != 0:
+                    transition[(states[s1], a1)].append([end, float(1), win_probab])
+                if draw_probab != 0:
+                    transition[(states[s1], a1)].append([end, float(0), draw_probab])
 
-                            if res2 == "lose" or res == "draw":
-                                transition[(states[s1], a1)] = [end, float(1), policy[s2][a2]]
-                            elif res2 == "valid":
-                                transition[(states[s1], a1)] = [states[s3], float(0), policy[s2][a2]]
-
-else:
-    for line in state_file:
-        s1 = str(line)[:9]
-        for a1 in range(9):
-            if s1[a1] == '0':
-                s2 = s1[:a1] + '1' + s1[a1+1:]
-                res = check_term_state(s2, 1)
-
-                if res == "win":
-                    transition[(states[s1], a1)] = [end, float(1), float(1)]
-                elif res == "lose" or res == "draw":
-                    transition[(states[s1], a1)] = [end, float(0), float(1)]
-                elif res == "valid":
-                    for a2 in range(9):
-                        if s2[a2] == '0' and policy[s2][a2] != 0:
-                            s3 = s2[:a2] + '2' + s2[a2+1:]
-                            res2 = check_term_state(s3, 2)
-
-                            if res2 == "lose" or res == "draw":
-                                transition[(states[s1], a1)] = [end, float(1), policy[s2][a2]]
-                            elif res2 == "valid":
-                                transition[(states[s1], a1)] = [states[s3], float(0), policy[s2][a2]]
 
 print("numStates", numStates)
 print("numActions", numActions)
 print("end", end)
 for key in transition.keys():
-    print("transition", key[0], key[1], transition[key][0], int(transition[key][1]), transition[key][2])  
+    for branch in transition[key]:
+        print("transition", key[0], key[1], branch[0], int(branch[1]), branch[2])
 print("mdptype", "episodic")
 print("discount", 1)
         
