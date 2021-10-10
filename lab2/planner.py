@@ -149,7 +149,7 @@ else:
     val, pi = lp(states, actions, transition, discount, end)
 
 for i in range(states):
-    print(val[i], pi[i])
+    print("{:.6f}".format(val[i]), pi[i])
 
 
 
