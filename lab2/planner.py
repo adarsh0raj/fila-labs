@@ -123,9 +123,9 @@ for x in mdp_file.readlines():
     y = x.split(" ")
     if y[0] == "transition":
         if (int(y[1]), int(y[2])) not in transition.keys():
-            transition[(int(y[1]), int(y[2]))] = [[int(y[3]), np.float(y[-2]), np.float(y[-1])]]
+            transition[(int(y[1]), int(y[2]))] = [[int(y[3]), float(y[-2]), float(y[-1])]]
         else:
-            transition[(int(y[1]), int(y[2]))].append([int(y[3]), np.float(y[-2]), np.float(y[-1])])
+            transition[(int(y[1]), int(y[2]))].append([int(y[3]), float(y[-2]), float(y[-1])])
         continue
     elif y[0] == "mdptype":
         mdptype = str(y[-1][:-1])

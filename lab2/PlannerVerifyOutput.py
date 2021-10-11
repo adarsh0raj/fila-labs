@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/python
 import random,argparse,sys,subprocess,os
 parser = argparse.ArgumentParser()
 import numpy as np
@@ -22,9 +22,9 @@ class VerifyOutputPlanner:
             for in_file in input_file_ls:
                 print("\n\n","-"*100)
                 if algo == 'default':
-                    cmd_planner = "python3","planner.py","--mdp",in_file
+                    cmd_planner = "python","planner.py","--mdp",in_file
                 else:
-                    cmd_planner = "python3","planner.py","--mdp",in_file,"--algorithm",algo
+                    cmd_planner = "python","planner.py","--mdp",in_file,"--algorithm",algo
                 print('test case',str(counter),algo,":\t"," ".join(cmd_planner))
                 counter+=1
                 cmd_output = subprocess.check_output(cmd_planner,universal_newlines=True)

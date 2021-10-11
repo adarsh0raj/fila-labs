@@ -9,7 +9,6 @@ parser.add_argument("--states", type=str, required=True)
 parser.add_argument("--player-id", type=int, required=True)
 args = parser.parse_args()
 
-
 state_file = open(args.states, "r")
 states = []
 
