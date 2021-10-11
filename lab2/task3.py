@@ -5,7 +5,7 @@ os.system("rm -rf task3")
 os.system("mkdir task3")
 
 first_player = 1          
-sec_player = 2 
+sec_player = 2
 pol = 1
 
 initial_pol = "./data/attt/policies/p{}_policy{}.txt".format(sec_player, pol)
@@ -16,11 +16,11 @@ for i in range(10):
         cmd1 = "python encoder.py --states {} --policy {} > ./task3/mdpfile1".format(states[first_player - 1], initial_pol)
     else:
         cmd1 = "python encoder.py --states {} --policy {} > ./task3/mdpfile1"
-    cmd2 = "python planner.py --algorithm lp --mdp ./task3/mdpfile1 > ./task3/vp1"
+    cmd2 = "python planner.py --algorithm vi --mdp ./task3/mdpfile1 > ./task3/vp1"
     cmd3 = "python decoder.py --player-id {} --states ./data/attt/states/states_file_p{}.txt --value-policy ./task3/vp1 > ./task3/pi{}_{}"
 
     cmd4 = "python encoder.py --states {} --policy {} > ./task3/mdpfile2"
-    cmd5 = "python planner.py --algorithm lp --mdp ./task3/mdpfile2 > ./task3/vp2"
+    cmd5 = "python planner.py --algorithm vi --mdp ./task3/mdpfile2 > ./task3/vp2"
     cmd6 = "python decoder.py --player-id {} --states ./data/attt/states/states_file_p{}.txt --value-policy ./task3/vp2 > ./task3/pi{}_{}"
 
     if i==0:

@@ -84,28 +84,18 @@ def lp(states, actions, transition, discount, end):
 def hpi(states, actions, transition, discount, end):
 
     pi = np.random.randint(0, actions, size=states)
-    loop_flag = True
-
-    while loop_flag:
-        
+    while True:
         v = calc_val(states, actions, pi, transition, discount, end)
-        loop_flag = False
+        temp_pi = deepcopy(pi)
         for s in range(states):
-            a_ia = -1
-            for a in range(actions):
-                try:
-                    q = sum([b[2]*(b[1] + discount*v[b[0]]) for b in transition[(s,a)]])
-                except:
-                    q = 0
+            q = np.array([calc_action_val(v, s, a, transition, discount) for a in range(actions)])
+            temp_pi[s] = np.argmax(q - (v[s] + 1e-6))
 
-                if q > v[s] + 1e-6:
-                    a_ia = a
-                    break
+        if (temp_pi == pi).all():
+            break
+        pi = deepcopy(temp_pi)
 
-            if a_ia != -1:
-                loop_flag = True
-                pi[s] = a_ia
-
+    v = calc_val(states, actions, pi, transition, discount, end)
     return v, pi
     
 parser = argparse.ArgumentParser()

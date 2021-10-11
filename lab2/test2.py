@@ -1,7 +1,7 @@
 import os
 
 cmd1 = "python encoder.py --states ./data/attt/states/states_file_p{}.txt --policy ./data/attt/policies/p{}_policy{}.txt > mdp{}{}"
-cmd2 = "python planner.py --mdp mdp{}{} > vp{}{}"
+cmd2 = "python planner.py --algprithm hpi --mdp mdp{}{} > vp{}{}"
 cmd3 = "python decoder.py --player-id {} --states ./data/attt/states/states_file_p{}.txt --value-policy vp{}{} > pol{}{}"
 
 for i in [1,2]:

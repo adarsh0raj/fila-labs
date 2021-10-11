@@ -97,7 +97,7 @@ for line in state_file:
                 if draw_probab != 0:
                     transition[(states[s1], a1)].append([end, float(0), draw_probab])
         else:
-            transition[(states[s1], a1)] = [[end, float(-100), float(1)]]
+            transition[(states[s1], a1)] = [[end, float(-1), float(1)]]
 
 
 print("numStates", numStates)
