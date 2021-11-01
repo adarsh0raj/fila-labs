@@ -1,0 +1,7 @@
+https://numpy.org/doc/
+https://docs.pulpproject.org/pulpcore/
+https://numpy.org/doc/stable/reference/generated/numpy.linalg.solve.html
+https://docs.python.org/3/library/argparse.html
+https://www.geeksforgeeks.org/python-os-system-method/
+https://stackoverflow.com/questions/14078117/how-do-you-use-subprocess-check-output-in-python
+https://docs.python.org/3/library/subprocess.html
