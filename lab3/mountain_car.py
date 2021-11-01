@@ -31,8 +31,8 @@ class sarsaAgent():
         self.env = gym.make('MountainCar-v0')
         self.states_T1 = (18*28)
         self.actions = 3
-        self.epsilon_T1 = 1e-6
-        self.epsilon_T2 = 1e-6
+        self.epsilon_T1 = 1e-5
+        self.epsilon_T2 = 1e-5
         self.learning_rate_T1 = 0.6
         self.learning_rate_T2 = 0.6
         self.weights_T1 = np.zeros((self.actions, self.states_T1))
