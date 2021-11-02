@@ -32,9 +32,9 @@ class sarsaAgent():
         self.states_T1 = (18*29)
         self.actions = 3
         self.numTilings = 8
-        self.epsilon_T1 = 1e-6
+        self.epsilon_T1 = 0
         self.epsilon_T2 = 0
-        self.learning_rate_T1 = 0.8
+        self.learning_rate_T1 = 0.9
         self.learning_rate_T2 = 0.1
         self.weights_T1 = np.zeros((self.actions, self.states_T1))
         self.weights_T2 = np.zeros((self.actions, self.numTilings*self.states_T1))
