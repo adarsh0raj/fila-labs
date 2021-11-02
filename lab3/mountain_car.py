@@ -31,11 +31,11 @@ class sarsaAgent():
         self.env = gym.make('MountainCar-v0')
         self.states_T1 = (18*29)
         self.actions = 3
-        self.numTilings = 5
+        self.numTilings = 8
         self.epsilon_T1 = 1e-6
-        self.epsilon_T2 = 1e-5
+        self.epsilon_T2 = 0
         self.learning_rate_T1 = 0.8
-        self.learning_rate_T2 = 0.6
+        self.learning_rate_T2 = 0.1
         self.weights_T1 = np.zeros((self.actions, self.states_T1))
         self.weights_T2 = np.zeros((self.actions, self.numTilings*self.states_T1))
         self.discount = 1.0
@@ -59,13 +59,6 @@ class sarsaAgent():
         res[int(x*29 + v)] = 1
         return res
 
-        # x_bin = np.digitize(obs[0], np.linspace(-1.2, 0.6, 18))
-        # v_bin = np.digitize(obs[1], np.linspace(-0.07, 0.07, 28))
-
-        # res = np.zeros(self.states_T1, dtype=int)
-        # res[int((x_bin-1)*28 + (v_bin - 1))] = 1
-        # return res
-
     '''
     - get_better_features: Graded
     - Use this function to solve the Task-2
@@ -78,7 +71,7 @@ class sarsaAgent():
         offset1 = 0.1/self.numTilings
         offset2 = 0.01/self.numTilings
 
-        for i in range (self.numTilings):
+        for i in range(self.numTilings):
             x = np.floor((obs[0] - (i*offset1) + 1.2)*10)
             v = np.floor((obs[1] - (i*offset2) + 0.07)*200)
 
@@ -113,11 +106,7 @@ class sarsaAgent():
     def sarsa_update(self, state, action, reward, new_state, new_action, learning_rate, weights):
         weights[action] += learning_rate * (reward + self.discount * np.dot(new_state, weights[new_action]) - np.dot(state, weights[action])) * state
         return weights
-	
-        # err = np.dot(state, weights[action]) - (reward + self.discount*(np.dot(new_state, weights[new_action])))
-        # weights[action] -= (learning_rate*err)*state
 
-        # return weights
 
     '''
     - train: Ungraded.
