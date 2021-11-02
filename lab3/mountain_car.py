@@ -29,14 +29,15 @@ class sarsaAgent():
 
     def __init__(self):
         self.env = gym.make('MountainCar-v0')
-        self.states_T1 = (18*28)
+        self.states_T1 = (18*29)
         self.actions = 3
-        self.epsilon_T1 = 1e-5
+        self.numTilings = 5
+        self.epsilon_T1 = 1e-6
         self.epsilon_T2 = 1e-5
-        self.learning_rate_T1 = 0.6
+        self.learning_rate_T1 = 0.8
         self.learning_rate_T2 = 0.6
         self.weights_T1 = np.zeros((self.actions, self.states_T1))
-        self.weights_T2 = np.zeros((self.actions, self.states_T1))
+        self.weights_T2 = np.zeros((self.actions, self.numTilings*self.states_T1))
         self.discount = 1.0
         self.train_num_episodes = 10000
         self.test_num_episodes = 100
@@ -51,14 +52,19 @@ class sarsaAgent():
 
     def get_table_features(self, obs):
 
-        x_space = np.linspace(-1.2, 0.6, 18)
-        v_space = np.linspace(-0.07, 0.07, 28)
-        x_bin = np.digitize(obs[0], x_space)
-        v_bin = np.digitize(obs[1], v_space)
-
         res = np.zeros(self.states_T1, dtype=int)
-        res[int((x_bin-1)*28 + (v_bin - 1))] = 1
+        x = np.floor((obs[0] + 1.2)*10)
+        v = np.floor((obs[1] + 0.07)*200)
+
+        res[int(x*29 + v)] = 1
         return res
+
+        # x_bin = np.digitize(obs[0], np.linspace(-1.2, 0.6, 18))
+        # v_bin = np.digitize(obs[1], np.linspace(-0.07, 0.07, 28))
+
+        # res = np.zeros(self.states_T1, dtype=int)
+        # res[int((x_bin-1)*28 + (v_bin - 1))] = 1
+        # return res
 
     '''
     - get_better_features: Graded
@@ -67,11 +73,19 @@ class sarsaAgent():
     '''
 
     def get_better_features(self, obs):
-        temp_x = (obs[0] + 1.2)*10
-        temp_v = (obs[1] + 0.07)*100
-        res = np.zeros(self.states_T1, dtype=int)
-        res[int(np.floor(temp_x)*15 + np.floor(temp_v))] = 1
 
+        res = np.zeros(self.numTilings*self.states_T1, dtype=int)
+        offset1 = 0.1/self.numTilings
+        offset2 = 0.01/self.numTilings
+
+        for i in range (self.numTilings):
+            x = np.floor((obs[0] - (i*offset1) + 1.2)*10)
+            v = np.floor((obs[1] - (i*offset2) + 0.07)*200)
+
+            if x < 0 or x >= 18 or v < 0 or v >= 29:
+                continue
+            res[int(i*self.states_T1 + x*29 + v)] = 1
+        
         return res
 
     '''
@@ -86,7 +100,7 @@ class sarsaAgent():
         if np.random.uniform(0,1) < epsilon:
             return np.random.choice(3)
         else:
-            return np.argmax(np.array([np.dot(state, weights[a, :]) for a in range(self.actions)]))
+            return np.argmax(np.array([np.dot(state, weights[a]) for a in range(self.actions)]))
 
     '''
     - sarsa_update: Graded.
@@ -97,12 +111,13 @@ class sarsaAgent():
     '''
 
     def sarsa_update(self, state, action, reward, new_state, new_action, learning_rate, weights):
-	
-        err = np.dot(state, weights[action, :]) - (reward + self.discount*(np.dot(new_state, weights[new_action, :])))
-        # print(err)
-        weights[action, :] -= (learning_rate*err)*state
-
+        weights[action] += learning_rate * (reward + self.discount * np.dot(new_state, weights[new_action]) - np.dot(state, weights[action])) * state
         return weights
+	
+        # err = np.dot(state, weights[action]) - (reward + self.discount*(np.dot(new_state, weights[new_action])))
+        # weights[action] -= (learning_rate*err)*state
+
+        # return weights
 
     '''
     - train: Ungraded.
@@ -193,7 +208,7 @@ class sarsaAgent():
                 current_state = new_state
                 if done:
                     reward_list.append(-1.0 * t)
-                    print(e, -t, end='\r')
+                    # print(e, -t, end='\r')
                     break
                 t += 1
         return float(np.mean(reward_list))
