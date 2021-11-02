@@ -107,7 +107,6 @@ class sarsaAgent():
         weights[action] += learning_rate * (reward + self.discount * np.dot(new_state, weights[new_action]) - np.dot(state, weights[action])) * state
         return weights
 
-
     '''
     - train: Ungraded.
     - Don't change anything in this function.
@@ -143,7 +142,6 @@ class sarsaAgent():
                 current_state = new_state
                 if done:
                     reward_list.append(-t)
-                    print(e, -t, end='\r')
                     break
                 t += 1
         self.save_data(task)
@@ -197,7 +195,6 @@ class sarsaAgent():
                 current_state = new_state
                 if done:
                     reward_list.append(-1.0 * t)
-                    # print(e, -t, end='\r')
                     break
                 t += 1
         return float(np.mean(reward_list))
