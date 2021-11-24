@@ -1,0 +1,31 @@
+## Dependencies
+
+- gym
+- pyglet
+
+To install the above libraries, run the following command:
+'pip3 install gym'
+'pip3 install pyglet'
+
+## Code Layout
+
+- The class sarsaAgent holds all the implementation of the agent.The constructor of this class instantiates all the required hyperparamters and weights for the training.
+- The get_table_features and get_better_features functions returns feature vectors for task 1 and task 2 respectively.
+- The choose_action function takes state, current weights and epsilon as arguments and return a valid action to take.
+- sarsa_update function updates the Sarsa weights for Task 1 as well as Task 2. It takes appropriate arguments.
+- The save_weights function saves the final weights for the tasks.
+- The load_weights function loads and returns the saved weights.
+- The train function trains the agent for a certain number of episodes and obtain the data for plotting graphs for the two tasks. 
+- The test function loads the saved weights by using the earlier load_weights function and runs 100 episodes and returns the average reward.
+
+## Usage
+
+Run the following command to train the agent:
+'python mountain_car.py --task [T1/T2] --train 1'
+
+- The above code only trains the agent and saves the plot and final weights for the tasks. It is not expected to output anything.
+
+After training, run the following command to test the agent:
+'python mountain car.py --task [T1/T2] --train 0'
+
+- The above code tests the agent and returns the average reward for the 100 episodes.
